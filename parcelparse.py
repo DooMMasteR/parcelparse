@@ -16,8 +16,21 @@ parcelID = sys.argv[1]
 #print('Getting details for package ID: ' + str(parcelID))
 pageURL = ('http://nolp.dhl.de/nextt-online-public/set_identcodes.do?lang=de&idc=' + parcelID)
 #print('Grabbing page: ' + pageURL)
-statusPage = urllib.urlopen(pageURL)
-statusSoup = BeautifulSoup(statusPage.read())
-statusMSG = statusSoup.find('td', attrs={ 'class': 'mm_delivered'}).get_text()
-statusMSG = statusMSG.strip().split()[4:]
+
+try:
+  statusPage = urllib.urlopen(pageURL)
+  statusSoup = BeautifulSoup(statusPage.read())
+except:
+  print('Could not grab the URL, something is wrong here: ' + pageURL)
+  sys.exit(-1)
+  pass
+
+try:
+  statusMSG = statusSoup.find('td', attrs={ 'class': 'mm_delivered'}).get_text()
+except:
+  print('Something is wrong!!! Could not grab the status from the Page: ' + pageURL)
+  sys.exit(-1)
+  statusMSG = statusMSG.strip().split()[4:]
+  pass
+
 print(' '.join(statusMSG) + '.')
