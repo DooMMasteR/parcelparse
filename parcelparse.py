@@ -27,10 +27,10 @@ except:
 
 try:
   statusMSG = statusSoup.find('td', attrs={ 'class': 'mm_delivered'}).get_text()
+  statusMSG = statusMSG.strip().split()[4:]
 except:
   print('Something is wrong!!! Could not grab the status from the Page: ' + pageURL)
   sys.exit(-1)
-  statusMSG = statusMSG.strip().split()[4:]
   pass
 
 print(' '.join(statusMSG) + '.')
