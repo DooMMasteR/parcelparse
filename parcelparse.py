@@ -13,10 +13,21 @@ from bs4 import BeautifulSoup
 
 parcelID = sys.argv[1]
 
-#print('Getting details for package ID: ' + str(parcelID))
-pageURL = ('http://nolp.dhl.de/nextt-online-public/set_identcodes.do?lang=de&idc=' + parcelID)
-#print('Grabbing page: ' + pageURL)
+# check if parcelID is a valid number 
+if not parcelID.isdigit():
+  print('ParcelID is not a Number, check your input.')
+  sys.exit(-1)
 
+# check if parcelID has 12 digits
+if len(parcelID) != 12:
+  print('ParcelID must have 12 digits, check yout input.')
+  sys.exit(-1)
+
+
+# construct URL
+pageURL = ('http://nolp.dhl.de/nextt-online-public/set_identcodes.do?lang=de&idc=' + parcelID)
+
+# grab the page in soup it
 try:
   statusPage = urllib.urlopen(pageURL)
   statusSoup = BeautifulSoup(statusPage.read())
@@ -25,6 +36,7 @@ except:
   sys.exit(-1)
   pass
 
+# find the status message 
 try:
   statusMSG = statusSoup.find('td', attrs={ 'class': 'mm_delivered'}).get_text()
   statusMSG = statusMSG.strip().split()[4:]
@@ -33,4 +45,5 @@ except:
   sys.exit(-1)
   pass
 
+# print the status message
 print(' '.join(statusMSG) + '.')
