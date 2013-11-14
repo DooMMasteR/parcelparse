@@ -15,7 +15,6 @@ try:
   else:
     print('unknown mode, try help')
     sys.exit(-1)
-
 except:
   print('no argument given, try help')
   sys.exit(-1)
@@ -43,6 +42,4 @@ if mode == possible_modes[0]:
     sys.exit(-1)
   else:
     print(statusMSG)
-
-
 
