@@ -1,36 +1,48 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 
-# pip install urllib
-import urllib
+__author__ = 'doommaster'
+
 import sys
-# pip install html.py
-#import HTML
-#import datetime
-# pip install BeautifulSoup4
-from bs4 import BeautifulSoup
-#from collections import OrderedDict
+from providers import *
 
-parcelID = sys.argv[1]
 
-#print('Getting details for package ID: ' + str(parcelID))
-pageURL = ('http://nolp.dhl.de/nextt-online-public/set_identcodes.do?lang=de&idc=' + parcelID)
-#print('Grabbing page: ' + pageURL)
+possible_modes = ['parse', 'add', 'delete', 'list', 'update', 'help']
 
 try:
-  statusPage = urllib.urlopen(pageURL)
-  statusSoup = BeautifulSoup(statusPage.read())
+  if sys.argv[1] in possible_modes:
+    mode = sys.argv[1]
+  else:
+    print('unknown mode, try help')
+    sys.exit(-1)
+
 except:
-  print('Could not grab the URL, something is wrong here: ' + pageURL)
+  print('no argument given, try help')
   sys.exit(-1)
   pass
 
-try:
-  statusMSG = statusSoup.find('td', attrs={ 'class': 'mm_delivered'}).get_text()
-  statusMSG = statusMSG.strip().split()[4:]
-except:
-  print('Something is wrong!!! Could not grab the status from the Page: ' + pageURL)
-  sys.exit(-1)
-  pass
+if mode == possible_modes[0]:
+  try:
+    provider = sys.argv[2]
+    if ('providers.'+ provider) not in sys.modules.keys():
+      print('unknown provider')
+      sys.exit(-1)
+  except:
+    print('no or wrong provider')
+    sys.exit(-1)
+    pass
 
-print(' '.join(statusMSG) + '.')
+  try:
+    id = sys.argv[3]
+  except:
+    print('no or wrong id')
+    sys.exit(-1)
+    pass
+  statusMSG = dhl.dhlparse(id)
+  if statusMSG == -1:
+    sys.exit(-1)
+  else:
+    print(statusMSG)
+
+
+
